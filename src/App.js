@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import CryptoTable from './components/CryptoTable'
+import './App.css'
+import { getCurrencies, getCurrencySymbolByName } from './services/currency'
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [currency, setCurrency] = useState({ name: 'USD', symbol: '$' })
+
+    const handleCurrencyChange = (e) => {
+        setCurrency({
+            name: e.target.value,
+            symbol: getCurrencySymbolByName(e.target.value),
+        })
+    }
+    const availableCurrency = getCurrencies()
+    return (
+        <div className="App">
+            <form>
+                <label for="currency">Choose a currency:</label>
+                <select
+                    name="currency"
+                    id="currency"
+                    value={currency.name}
+                    onChange={(e) => {
+                        handleCurrencyChange(e)
+                    }}
+                >
+                    {availableCurrency.map((x) => (
+                        <option key={x.name}>{x.name}</option>
+                    ))}
+                </select>
+            </form>
+            <CryptoTable currency={currency} />
+        </div>
+    )
 }
 
-export default App;
+export default App
